@@ -1,11 +1,11 @@
 import streamlit as st
 import os
 import base64
-from streamlit_javascript import st_javascript
+#from streamlit_javascript import st_javascript
 from datetime import datetime
-import streamlit.components.v1 as components
+#import streamlit.components.v1 as components
 
-from streamlit_js_eval import streamlit_js_eval
+#from streamlit_js_eval import streamlit_js_eval
 import platform
 import matplotlib.pyplot as plt
 
