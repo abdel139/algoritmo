@@ -77,8 +77,6 @@ if st.button("Test",use_container_width=True):
             border-radius: 10px;
             margin: 20px 0;
             ">
-            
-            <h5>🧪 Test eventi base</h5>
             <div style = "
             padding: 10px;  
             display: flex;
