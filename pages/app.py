@@ -426,7 +426,7 @@ with tab_server:
 
 with tab_osservazioni:
     st.title("Osservazioni")
-    st.write("lorem ipsom lore acum distric drucal darum")
+    st.write("ciao")
 
 #print(st.session_state.utenti)
 #print(st.session_state.utente_corrente)
