@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>🧠 Raccolgo info dal browser...</p>
+
+    <script>
+      const data = {
+        userAgent: navigator.userAgent,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        location: window.location.href,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        language: navigator.language,
+      };
+
+      const sendValue = () => {
+        const streamlitEvents = new Event("streamlit:componentReady", {
+          bubbles: true,
+          cancelable: true,
+        });
+        window.dispatchEvent(streamlitEvents);
+        window.parent.postMessage(
+          {
+            isStreamlitMessage: true,
+            type: "streamlit:setComponentValue",
+            value: data,
+          },
+          "*"
+        );
+      };
+
+      window.addEventListener(
+        "message",
+        (event) => {
+          const { data } = event;
+          if (data?.type === "streamlit:render") {
+            sendValue();
+          }
+        },
+        false
+      );
+
+      console.log(data);
+    </script>
+  </body>
+</html>
