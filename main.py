@@ -77,8 +77,6 @@ if st.button("Test",use_container_width=True):
             border-radius: 10px;
             margin: 20px 0;
             ">
-            
-            <h5>🧪 Test eventi base</h5>
             <div style = "
             padding: 10px;  
             display: flex;
@@ -88,7 +86,7 @@ if st.button("Test",use_container_width=True):
             <h4>📋 Informazioni raccolte:</h4>
             <p> 🕒 Data e ora: {ora}</p>
             <p> 🖥️ Sistema: {Sistema}</p>
-            <p> 🐍 Python version:: {Python}</p>
+            <p> 🐍 Python version: {Python}</p>
             <p style ='display:none; margin:0; flex:1'> , personalizzate. Ma siamo sicuri che lo siano davvero? Dietro ogni like, ogni sugge </p>
             <div style ="display:none; border-radius:10px; overflow: hidden">
             <img  src="data:image/jpeg;base64,{img_base64}" alt="img" width="100" height="120">
