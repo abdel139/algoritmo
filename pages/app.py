@@ -1,17 +1,14 @@
 import streamlit as st
 import os
-
 import pandas as pd,numpy as np
-#import matplotlib.pyplot as plt
 import time
 import glob
 import altair as alt
 import pydeck as pdk
 import urllib.parse
 from streamlit_image_select import image_select
-
-#if "likes_utenti" not in st.session_state:
-#    st.session_state.likes_utenti = {}
+import random
+from itertools import chain
 imgs_2 = []
 tags = set()
 for nome_file in os.listdir("static"):
@@ -23,8 +20,6 @@ for nome_file in os.listdir("static"):
             "tag": tag
             })
 n_imgs = len(imgs_2)
-   
-
 province_coords = {
     'agrigento': [37.3000, 13.6000],
     'alessandria': [44.9167, 8.6167],
@@ -140,15 +135,24 @@ if 'index_random' not in st.session_state:
 st.session_state.random_index = np.random.randint(0, n_imgs)
 
 
-#if 'tags' not in st.session_state:
-#    st.session_state.tags = {}
 
+#genero dati random per i grafici
+def rang_data_graf():
+    obj = {}
+    for tag in tags:
+        obj[tag] = {
+            "like":random.randint(1,10),
+            "dislike":-(random.randint(1,10)),
+        }
+    return obj
 #login 
 if 'utenti' not in st.session_state:
         st.session_state.utenti = {
-            'abdel': {'eta': 25, 'citta': 'rabat','tags':{}},
-            'davide': {'eta': 22, 'citta': 'gela','tags':{}},
-            'marco': {'eta': 20, 'citta': 'torino','tags':{}}
+            'abdel': {'eta': 25, 'citta': 'pescara','tags':rang_data_graf(),'max':None,'min':None},
+            'davide': {'eta': 21, 'citta': 'gela','tags':rang_data_graf(),'max':None,'min':None},
+            'filippo': {'eta': 20, 'citta': 'torino','tags':rang_data_graf(),'max':None,'min':None},
+            'aurora': {'eta': 20, 'citta': 'torino','tags':rang_data_graf(),'max':None,'min':None},
+            'angela': {'eta': 20, 'citta': 'torino','tags':rang_data_graf(),'max':None,'min':None},
         }
 if 'utente_corrente' not in st.session_state:
     st.session_state.utente_corrente = None
@@ -184,7 +188,7 @@ def grafico(df):
         title=None              
     )
     st.altair_chart(chart, use_container_width=True)
-tab_home,tab_server,tab_osservazioni = st.tabs(["home","Server","osservazioni"])
+tab_home,tab_server,tab_filtro = st.tabs(["home","Server","Filtraggio"])
 
 
 with tab_home:
@@ -232,13 +236,6 @@ with tab_home:
             st.session_state.fase = 'home'
 
     def esegui_logout():
-        #corr = st.session_state.utente_corrente
-        #salvo i dati nell'diz
-        #if corr not in st.session_state.likes_utenti:
-        #    st.session_state.likes_utenti[corr] = {}
-        #st.session_state.likes_utenti[corr]["eta"]=st.session_state.utenti[corr]["eta"]
-        #st.session_state.likes_utenti[corr]["citta"]=st.session_state.utenti[corr]["citta"]
-        #st.session_state.likes_utenti[corr]["tags"]=st.session_state.utenti[corr]["tags"]
         #logica logout 
         st.session_state.fase = 'login'
         st.session_state.utente_corrente = None
@@ -248,15 +245,16 @@ with tab_home:
 
     #LOGIN
     if st.session_state.fase == 'login':
-        st.text_input("Inserisci il tuo nome:", key="temp_nome")
-        st.button("Login", on_click=esegui_login)
+        st.info("Inserisci un nome e prova l'applicazione.")
+        st.text_input("Inserisci nome:", key="temp_nome")
+        st.button("Login", on_click=esegui_login,use_container_width=True)
 
     #REGISTRAZIONE
     elif st.session_state.fase == 'registrazione':
         st.write(f"Benvenuto **{st.session_state.utente_corrente}**, completa la registrazione:")
         st.number_input("Età:", min_value=0, key="temp_eta")
         st.text_input("Città:", key="temp_citta")
-        st.button("Registrati", on_click=esegui_registrazione)
+        st.button("Registrati", on_click=esegui_registrazione,use_container_width=True)
 
     #HOME
     elif st.session_state.fase == 'home':
@@ -275,35 +273,34 @@ with tab_home:
             col1, col2, col3 = st.columns([1, 2, 1])  
             with col2:
                 st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
-            #st.write(imgs_2[st.session_state.random_index]["tag"])
-            col1,col2,col3 = st.columns([3,1,4])
-            with col2:
-                decremento2 = st.button("👎",on_click= cambia_valore,args=(-1,))
-            with col3:
-                incremento2 = st.button("👍",on_click=  cambia_valore,args=(1,))
+                col1,col2 = st.columns([1,1])
+                with col1:
+                    st.button("👍",on_click=  cambia_valore,args=(1,),use_container_width=True)
+                with col2:
+                    st.button("👎",on_click= cambia_valore,args=(-1,),use_container_width=True)
             #grafico
             col1,col2,col3 = st.columns([1,4,1])
             with col2:
+                st.divider()
                 chart_data = pd.DataFrame.from_dict(st.session_state.utenti[st.session_state.utente_corrente]["tags"], orient='index')
                 chart_data.rename(columns={'index': 'Tag'}, inplace=True)
-                st.subheader("Like/Dislike")
-
-                if len(chart_data)==0:
-                    st.subheader("Inizia a mettere Like/Dislike per vedere il grafico")
-                else:
-                    #st.bar_chart(chart_data)
-                    df = chart_data
-                    #print("df1: ",df)
-                    grafico(df)
-                    
-                st.divider()
-                dati = st.session_state.utenti[st.session_state.utente_corrente]
-                ordinati = sorted(
-                            dati['tags'].items(),
-                            key=lambda item: (-(item[1]['like'] - item[1]['dislike']), item[1]['like'])
-                        )
-                st.write(ordinati)
-                st.divider()
+                with st.expander("**Grafico Like/Dislike**"):
+                    if len(chart_data)==0:
+                        st.subheader("Inizia a mettere Like/Dislike per vedere il grafico")
+                    else:
+                        #st.bar_chart(chart_data)
+                        df = chart_data
+                        #print("df1: ",df)
+                        grafico(df)
+                        
+                #st.divider()
+                #dati = st.session_state.utenti[st.session_state.utente_corrente]
+                #ordinati = sorted(
+                #            dati['tags'].items(),
+                #            key=lambda item: (-(item[1]['like'] - item[1]['dislike']), item[1]['like'])
+                #        )
+                #st.write(ordinati)
+                #st.divider()
         fun_incremento_2() 
 
         @st.fragment()
@@ -337,16 +334,14 @@ with tab_home:
 
         if False:
             fun_gellery()
-
-
-       
+     
 with tab_server:
     possibili_interessi = {
-        "montagna":["Natura","Animale"],
-        "mare":["Acqua","Lago","Pesce"],
-        "citta":["Strada","Edificio"],
-        "car":["Tecnologia"],
-        #"bici":["Tecnologia"]
+    "montagna": ["Escursionismo", "Campeggio", "Neve", "Natura", "Fauna selvatica", "Trekking", "Alpinismo"],
+    "mare": ["Spiaggia", "Barca", "Surf", "Pesca", "Snorkeling", "Acqua salata", "Oceano", "Relax"],
+    "citta": ["Architettura", "Vita notturna", "Cultura urbana", "Musei", "Trasporti", "Eventi", "Grattacieli"],
+    "car": ["Motori", "Auto sportive", "Guida autonoma", "Tecnologia", "Design", "Velocità", "Mobilità"],
+    "bici": ["Ciclismo", "Ecologia", "Mobilità sostenibile", "Percorsi naturali", "Sport", "Salute", "Tempo libero"]
     }
     dati_utenti = st.session_state.utenti
     data = []
@@ -359,10 +354,52 @@ with tab_server:
             "lat": lat,
             "lon": lon
         })
-    st.write("dati utenti: ")
-    st.write(dati_utenti)
-    df = pd.DataFrame(data)
     st.title("Analisi Utenti Registrati")
+    st.markdown("""
+                <div style="width:100%; background:#f5f5f5;padding:20px;border-radius:10px;margin:10px 0;"> 
+                    In questa sezione sono raccolti tutti i dati degli utenti, divisi per: 
+                    <ul style="margin:0;"> 
+                        <li>Distribuzione d'età</li> 
+                        <li>Città di residenza</li> 
+                        <li>Grafici Like/Dislike</li> 
+                    </ul>
+                <div style="display: none;">
+                    <pre>
+                        <code> ciao</code>
+                    </pre>
+                </div>
+                </div>
+                """,unsafe_allow_html=True)
+    df = pd.DataFrame(data)
+    #Elenco utenti
+    st.subheader("Utenti registrati")
+    valori_utenti = [] 
+    for i, row in df.iterrows():
+        #st.markdown(f"- **{row['nome']}** – {row['citta']}, {row['eta']} anni")
+        valori_utenti.append(f""" 
+                    <div style="width:100%;display:flex;align-items:center;justify-content:center;margin:10px auto 15px"> 
+                        <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png " alt="Profile" width="35"> 
+                    </div>
+                    <div style="height:50%;display:flex;flex-direction:column;justify-content:space-around">
+                        <div style="display:flex;justify-content:space-around"> 
+                            <div>{row["nome"]}</div>
+                            <div>{row["eta"]}</div>
+                        </div>
+                        <div style="width:100%;text-align:center;">{row["citta"]}</div>
+                    </div>
+                 """)
+    cards_utenti=[]
+    for i in range(len(valori_utenti)):
+       cards_utenti.append(f"""<div style="width:100px;height:150px; background:#e4efff;border-radius:10px;margin:10px;padding:5px;">{valori_utenti[i]}</div>""")
+    st.markdown(f"""
+                <div style="display:flex; width:100%; justify-content:space-around; margin:30px 0;flex-wrap:wrap;">{"".join(cards_utenti)}</div>
+                """,unsafe_allow_html=True)
+        
+    
+    #st.subheader("dati utenti: ")
+    with st.expander("Dati utenti (Json):",expanded=False):
+        st.write(dati_utenti)
+    
     st.subheader("Distribuzione età")
     st.bar_chart(df["eta"].value_counts().sort_index())
 
@@ -387,47 +424,126 @@ with tab_server:
         ]
     ))
 
-    #Elenco utenti
-    st.subheader("Utenti registrati")
-    for _, row in df.iterrows():
-        st.markdown(f"- **{row['nome']}** – {row['citta']}, {row['eta']} anni")
-    st.subheader("Grafici Like/Dislike per ogni utente")
-    st.write("i dati vengono aggiornati solo dopo il logout dell'utente")
     
-    for utente, dati in st.session_state.utenti.items():
+    #Grafici
+    st.subheader("Grafici Like/Dislike per ogni utente")
+    st.info("I dati vengono aggiornati solo dopo il logout dell'utente")
+
+    col1, col2 = st.columns(2)
+    colonne = [col1,col2]
+    for idx, (utente, dati) in enumerate(st.session_state.utenti.items()):
+        
+        with colonne[idx % 2]:  # Alterna tra col1 e col2
+            tags = dati.get("tags", {})
+            count_max = -100
+            count_min = 100
+            tag_max = ''
+            tag_min = ''
+            for tag in tags:
+                count = tags[tag]["like"] + tags[tag]["dislike"]
+                if count > count_max:
+                    count_max = count
+                    tag_max = tag
+                if count < count_min:
+                    count_min = count
+                    tag_min = tag
+            if tags:
+                st.session_state["utenti"][utente]["max"] = tag_max
+                st.session_state["utenti"][utente]["min"] = tag_min
+                st.write(f"#### {utente.capitalize()} ({dati['citta']}, {dati['eta']} anni)")
+                df = pd.DataFrame.from_dict(tags, orient="index")
+                grafico(df)
+                st.success(f"**Interesse principale:** {(tag_max).capitalize()}")
+                if tag_max in possibili_interessi:
+                    with st.expander("**:green[Possibili interessi]**",):
+                        for item in possibili_interessi[tag_max]:
+                            st.write(item)
+                        #st.write(f"**:green[Possibili interessi:]** \n" + " |".join(possibili_interessi[tag_max]))
+                st.error(f"**Disinteresse principale:** {(tag_min).capitalize()}")
+                if tag_min in possibili_interessi:
+                     with st.expander("**:red[Possibili disinteressi]**"):
+                        for item in possibili_interessi[tag_max]:
+                            st.write(item)
+                    #st.write(f"Possibili disinteressi: \n" + " | | ".join(possibili_interessi[tag_min]))
+            else:
+                st.info(f"L'utente {utente} non ha ancora nessun tag.")
+            st.divider()     
+with tab_filtro:
+    utenti = st.session_state.get("utenti", {})
+    st.markdown("# 🎯 Filtra gli utenti")
+    
+    #st.info("In questa sezione puoi filtrare tutti gli utenti, per età, citta, interesse e parole chiavi riferite agli interessi  ")
+    st.markdown("""
+                <div style="width:100%; background:#f5f5f5;padding:20px;border-radius:10px;margin:10px 0;"> 
+                    In questa sezione puoi filtrare tutti gli utenti per: 
+                    <ul style="margin:0;"> 
+                        <li>Età</li> 
+                        <li>Città</li> 
+                        <li>Interesse</li> 
+                        <li>Possibili interessi</li> 
+                    </ul>
+                <div style="display: none;">
+                    <pre>
+                        <code> ciao</code>
+                    </pre>
+                </div>
+                </div>
+                """,unsafe_allow_html=True)
+    
+    citta_disponibili = list({dati["citta"] for dati in utenti.values()})
+    tag_possibili = list(set(tag for dati in utenti.values() for tag in dati["tags"]))
+    st.subheader("🔍 Filtro utenti")
+    eta_range = st.slider("🎂 Età", 1, 99, (18, 30))
+    citta_selezionate = st.multiselect("🏙️ Città", citta_disponibili)
+    interesse_principale = st.selectbox("🌟 Interesse principale", [""] + tag_possibili, index=0)
+    #tag_specifici = st.multiselect("Filtra per tag specifici", tag_possibili)
+    tutti_possibili = list(set(chain(*possibili_interessi.values())))
+    possibile_interesse = st.selectbox("Filtra per parole chiave correlate", [""] + tutti_possibili, index=0)
+    mostra_like_dislike = st.checkbox("📊 Mostra utenti con like/dislike",value=False)
+    st.divider()
+
+    # 🔍 FILTRAGGIO
+    utenti_filtrati = {}
+    for nome, dati in utenti.items():
+        eta = dati["eta"]
+        citta = dati["citta"]
+        max_tag = dati.get("max", "")
+        min_tag = dati.get("min", "")
         tags = dati.get("tags", {})
-        count_max = -100
-        count_min = 100
-        tag_max = ''
-        tag_min = ''
-        for tag in tags:
-            count = tags[tag]["like"] + tags[tag]["dislike"]
-            if count > count_max:
-                count_max = count
-                tag_max = tag
-            if count < count_min:
-                count_min = count
-                tag_min = tag
-        if tags:
-            st.write(f"Utente: {utente} ({dati['citta']}, {dati['eta']} anni)")
-            df = pd.DataFrame.from_dict(tags, orient="index")
-            #print("df2: ",df)
-            grafico(df)
-            st.success(f"Interesse principale: {(tag_max).capitalize()}")
-            if tag_max in possibili_interessi:
-                st.write(f"Possibili interessi: \n"+" | | ".join(possibili_interessi[tag_max]))
-            st.error(f"Disinteresse principale: {(tag_min).capitalize()}")
-            if tag_min in possibili_interessi:
-                st.write(f"Possibili disinteressi: \n"+" | | ".join(possibili_interessi[tag_min]))
-        else:
-            st.info(f"L'utente {utente} non ha ancora nessun tag.")
-        st.divider()
-            
+        
+        if not (eta_range[0] <= eta <= eta_range[1]):
+            continue
+        if citta_selezionate and citta not in citta_selezionate:
+            continue
+        if interesse_principale and max_tag != interesse_principale:
+            continue
+        if possibile_interesse:
+            interesse_utente = dati.get("max")
+            parole_correlate = possibili_interessi.get(interesse_utente, [])
+            if possibile_interesse not in parole_correlate:
+                continue
+        utenti_filtrati[nome] = dati
 
-with tab_osservazioni:
-    st.title("Osservazioni")
-    st.write("ciao")
+    st.markdown("## 📋 Risultati filtrati")
 
+    if utenti_filtrati:
+        for nome, dati in utenti_filtrati.items():
+            st.markdown(f"**👤 {nome}** – {dati['eta']} anni, {dati['citta']}")
+            st.success(f"✨ Interesse principale: {dati.get('max', 'N/A').capitalize()}")
+            st.error(f"😑 Disinteresse principale: {dati.get('min', 'N/A').capitalize()}")
+            if mostra_like_dislike:
+                with st.expander("📈 Dettagli Like/Dislike"):
+                    for tag, valori in dati["tags"].items():
+                        st.write(f"🔹 {tag.capitalize()}    → 👍 {valori['like']} | 👎 {valori['dislike']}")
+            st.divider()
+    else:
+        st.info("🙁 Nessun utente trovato con i criteri selezionati.")
+
+    
+#footer
+st.markdown("""<div style="height:50px"/>""",unsafe_allow_html=True)
+#st.divider()
+st.warning("Nessun dato viene raccolto realmente, qualsiasi informazione inserita verrà cancellata non appena si chiude l'app")
 #print(st.session_state.utenti)
 #print(st.session_state.utente_corrente)
 #print(st.session_state.fase)

@@ -17,6 +17,7 @@ def get_image_base64(path):
 img_base64 = get_image_base64("./static/imgs_site/img1.jpg")
 home_titolo = "Dentro l'Agoritmo"
 home_caption = "Scopri come i social decidono cosa vedi. Un viaggio interattivo nel cuore degli algoritmi che modellano la tua bacheca."
+
 st.markdown(f"""
             <div style = "
             position:relative; 
@@ -26,6 +27,8 @@ st.markdown(f"""
             flex-direction: row;
             justify-content: space-around;
             margin-bottom : 100px;
+            border-radius:20px;
+            overflow:hidden;
             ">
             <div style= "background: rgba(255, 255, 255, 0.4); 
   backdrop-filter: blur(8px); 
@@ -223,7 +226,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Pulsanti per interesse
-st.markdown("### 💡 Cosa attira la tua attenzione oggi?")
+st.markdown("### ❓ Cosa attira la tua attenzione oggi?")
 
 col1, col2, col3, col4, col5 = st.columns(5)
 if col1.button("🌱 Ambiente"):
@@ -238,7 +241,7 @@ if col5.button("💰 Finanza"):
     st.session_state.click_counts["finanza"] += 1
 
 # Pulsante reset
-if st.button("🔄 Reset algoritmo"):
+if st.button("🔄 Reset algoritmo",use_container_width=True):
     for key in st.session_state.click_counts:
         st.session_state.click_counts[key] = 0
     #st.experimental_rerun()
@@ -284,3 +287,11 @@ st.caption("🔍 Questa è una simulazione educativa. Nessun dato reale viene us
 
 # ------------------
 
+
+
+
+
+# footer 
+st.markdown("""<div style = "with:100%;margin:100px 0 0 0;"></div>""",unsafe_allow_html=True)
+st.divider()
+st.success("Per il corso di Internet e social media realizzato da: Abdelkbir, Davide, Filippo, Aurora, Angela ")
