@@ -15,7 +15,7 @@ def get_image_base64(path):
     
 #st.title("Home")
 img_base64 = get_image_base64("./static/imgs_site/img1.jpg")
-home_titolo = "Dentro l'Agoritmo"
+home_titolo = "Dentro l'Algoritmo"
 home_caption = "Scopri come i social decidono cosa vedi. Un viaggio interattivo nel cuore degli algoritmi che modellano la tua bacheca."
 
 st.markdown(f"""
