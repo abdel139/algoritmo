@@ -67,43 +67,43 @@ ora = "nessun dato"
 Sistema = "nessun dato"
 Python = "nessun dato"
 
-
-st.subheader("💡 Esempio pratico")
-if st.button("Test",use_container_width=True):
-    now = datetime.now()
-    ora = now.strftime("%Y-%m-%d %H:%M:%S")
-    Sistema = f"{platform.system()} {platform.release()}"
-    Python = platform.python_version()
-    st.markdown(f"""
-            <div style = "background :#ffffff11;
-            padding: 10px; 
-            border-radius: 10px;
-            margin: 20px 0;
-            ">
-            <div style = "
-            padding: 10px;  
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around
-            ">
-            <h4>📋 Informazioni raccolte:</h4>
-            <p> 🕒 Data e ora: {ora}</p>
-            <p> 🖥️ Sistema: {Sistema}</p>
-            <p> 🐍 Python version: {Python}</p>
-            <p style ='display:none; margin:0; flex:1'> , personalizzate. Ma siamo sicuri che lo siano davvero? Dietro ogni like, ogni sugge </p>
-            <div style ="display:none; border-radius:10px; overflow: hidden">
-            <img  src="data:image/jpeg;base64,{img_base64}" alt="img" width="100" height="120">
-            </div>
-            </div>
-             </div>
-            
-            """, unsafe_allow_html=True)
-
-
-else: 
-    st.info("Premi il pulsante per raccogliere informazioni.")
+if False:
+    st.subheader("💡 Esempio pratico")
+    if st.button("Test",use_container_width=True):
+        now = datetime.now()
+        ora = now.strftime("%Y-%m-%d %H:%M:%S")
+        Sistema = f"{platform.system()} {platform.release()}"
+        Python = platform.python_version()
+        st.markdown(f"""
+                <div style = "background :#ffffff11;
+                padding: 10px; 
+                border-radius: 10px;
+                margin: 20px 0;
+                ">
+                <div style = "
+                padding: 10px;  
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around
+                ">
+                <h4>📋 Informazioni raccolte:</h4>
+                <p> 🕒 Data e ora: {ora}</p>
+                <p> 🖥️ Sistema: {Sistema}</p>
+                <p> 🐍 Python version: {Python}</p>
+                <p style ='display:none; margin:0; flex:1'> , personalizzate. Ma siamo sicuri che lo siano davvero? Dietro ogni like, ogni sugge </p>
+                <div style ="display:none; border-radius:10px; overflow: hidden">
+                <img  src="data:image/jpeg;base64,{img_base64}" alt="img" width="100" height="120">
+                </div>
+                </div>
+                </div>
+                
+                """, unsafe_allow_html=True)
 
 
+    else: 
+        st.info("Premi il pulsante per raccogliere informazioni.")
+
+st.divider()
 #with st.container():
 #    st.markdown("---")  # linea di separazione
 #    col1, col2 = st.columns([2, 1])  # testo largo, immagine stretta
@@ -294,4 +294,16 @@ st.caption("🔍 Questa è una simulazione educativa. Nessun dato reale viene us
 # footer 
 st.markdown("""<div style = "with:100%;margin:100px 0 0 0;"></div>""",unsafe_allow_html=True)
 st.divider()
-st.success("Per il corso di Internet e social media realizzato da: Abdelkbir, Davide, Filippo, Aurora, Angela ")
+st.markdown("""
+        <div style="width:100%; margin:20px 0; background:rgba(33, 195, 84, 0.1);color: rgb(23, 114, 51);padding:30px 20px; border-radius:10px;">
+        <p>Per il corso di Internet e social media realizzato da:</p>
+            <ul>
+            <li style="list-style: circle;">Abdelkbir Berrahhal [s311085]</li>
+            <li style="list-style: circle;">Davide  Cammalleri [s322575]</li>
+            <li style="list-style: circle;">Filippo Errigo [s313197]</li>
+            <li style="list-style: circle;">Aurora Strafallaci [s325070]</li>
+            <li style="list-style: circle;">Angela Fargnoli [s321728]</li>
+            </ul>
+        </div>
+        """,unsafe_allow_html=True)
+#st.success("Per il corso di Internet e social media realizzato da: Abdelkbir, Davide, Filippo, Aurora, Angela ")

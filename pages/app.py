@@ -340,7 +340,7 @@ with tab_server:
     "montagna": ["Escursionismo", "Campeggio", "Neve", "Natura", "Fauna selvatica", "Trekking", "Alpinismo"],
     "mare": ["Spiaggia", "Barca", "Surf", "Pesca", "Snorkeling", "Acqua salata", "Oceano", "Relax"],
     "citta": ["Architettura", "Vita notturna", "Cultura urbana", "Musei", "Trasporti", "Eventi", "Grattacieli"],
-    "car": ["Motori", "Auto sportive", "Guida autonoma", "Tecnologia", "Design", "Velocità", "Mobilità"],
+    "auto": ["Motori", "Auto sportive", "Guida autonoma", "Tecnologia", "Design", "Velocità", "Mobilità"],
     "bici": ["Ciclismo", "Ecologia", "Mobilità sostenibile", "Percorsi naturali", "Sport", "Salute", "Tempo libero"]
     }
     dati_utenti = st.session_state.utenti
