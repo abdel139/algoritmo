@@ -215,13 +215,17 @@ st.image("https://about.fb.com/wp-content/uploads/2021/01/NewsFeed_inline1.png?w
 #------------------
 # Titolo e introduzione
 #st.title("🧠 Il Feed Non È Tuo")
+
+
+st.divider()
+
 st.subheader("💡 Esempio pratico")
 st.subheader("Simula come un algoritmo decide cosa vedrai")
 
 st.markdown("""
 <div style="border-left: 6px solid #f63366; background-color: #eee; padding: 1rem; margin-bottom: 2rem;">
-  <strong>🎮 Esempio interattivo:</strong><br>
-  Questa sezione è una <em>dimostrazione pratica</em> di come i social ti mostrano solo ciò che attira la tua attenzione.
+<strong>🎮 Esempio interattivo:</strong><br>
+Questa sezione è una <em>dimostrazione pratica</em> di come i social ti mostrano solo ciò che attira la tua attenzione.
 </div>
 """, unsafe_allow_html=True)
 
@@ -244,28 +248,37 @@ if col5.button("💰 Finanza"):
 if st.button("🔄 Reset algoritmo",use_container_width=True):
     for key in st.session_state.click_counts:
         st.session_state.click_counts[key] = 0
-    #st.experimental_rerun()
 
 # Feed consigliato + contenuti nascosti
-st.markdown("---")
+#st.markdown("---")
 col_feed, col_hidden = st.columns(2)
-
+ok = 1
 with col_feed:
-    st.markdown("### 🔁 Contenuti consigliati dal tuo feed")
+    st.markdown("##### 🔁 Contenuti consigliati dal tuo feed")
     for categoria, count in st.session_state.click_counts.items():
         if count > 0:
             st.markdown(f"**📌 {categoria.capitalize()}**")
             articoli = base_content[categoria][:min(count, len(base_content[categoria]))]
             for articolo in articoli:
                 st.markdown(f"- {articolo}")
+            ok = 0
+        
+    if ok==1:
+        st.caption("Nessuna informazione disponibile")
+        ok =0
     total = sum(st.session_state.click_counts.values())
 
 with col_hidden:
-    st.markdown("### 🚫 Contenuti che non ti vengono mostrati")
+    st.markdown("##### 🚫 Contenuti che non ti vengono mostrati")
     for categoria, count in st.session_state.click_counts.items():
         if count == 0:
             st.markdown(f"- *{base_content[categoria][0]}*")
-st.info(f"Il feed si sta specializzando. Hai interagito {total} volte.")
+if total==0:
+    st.warning(f"Clicca su un pulsante.")
+elif total<3:
+    st.info(f"Continua ad interaggire")
+else:
+    st.success(f"Il feed si sta specializzando. Hai interagito {total} volte.")
 
 # Grafico interattivo
 col1,col2,col3 = st.columns([1,4,1])
