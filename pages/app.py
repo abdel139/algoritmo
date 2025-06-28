@@ -6,19 +6,48 @@ import glob
 import altair as alt
 import pydeck as pdk
 import urllib.parse
-from streamlit_image_select import image_select
+#from streamlit_image_select import image_select
 import random
 from itertools import chain
-imgs_2 = []
-tags = set()
-for nome_file in os.listdir("static"):
-    if nome_file.endswith((".jpg", ".png", ".jpeg")):
-        tag = nome_file.split("_")[0]
-        tags.add(tag)
-        imgs_2.append({
-            "url":nome_file,
-            "tag": tag
-            })
+from collections import defaultdict
+import matplotlib.pyplot as plt
+from collections import Counter
+# !imp da fare -----------------------------
+# todo: 
+#sife bar app 
+st.set_page_config(
+    page_title="App",
+    page_icon="📱",
+    layout="centered",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'About': "### per il progetto di *:blue[internet e social media]*, semplice dimostrazione su come gli algoritmi funzionano fornendo esempi iterativi",
+        }
+)
+@st.cache_data
+def carica_immagini_e_tag():
+    immagini = []
+    tag_set = set()
+    for nome_file in os.listdir("static"):
+        if nome_file.endswith((".jpg", ".png", ".jpeg")):
+            tag = nome_file.split("_")[0]
+            tag_set.add(tag)
+            immagini.append({"url": nome_file, "tag": tag})
+    return immagini, tag_set
+
+iterazioni_per_apprendere=10
+#imgs_2 = []
+#tags = set()
+#for nome_file in os.listdir("static"):
+#    if nome_file.endswith((".jpg", ".png", ".jpeg")):
+#        tag = nome_file.split("_")[0]
+#        tags.add(tag)
+#        imgs_2.append({
+#            "url":nome_file,
+#            "tag": tag
+#            })
+#n_imgs = len(imgs_2)
+imgs_2, tags = carica_immagini_e_tag()
 n_imgs = len(imgs_2)
 province_coords = {
     'agrigento': [37.3000, 13.6000],
@@ -132,45 +161,112 @@ province_coords = {
 
 if 'index_random' not in st.session_state:
     st.session_state.index_random = np.random.randint(0, n_imgs)
-st.session_state.random_index = np.random.randint(0, n_imgs)
+#st.session_state.random_index = np.random.randint(0, n_imgs)
 
+def genera_indice_ponderato(immagini, punteggi):
+    # 1. Mappa tag → lista indici
+    mappa_tag_indici = defaultdict(list)
+    for idx, elemento  in enumerate(immagini):
+        tag = elemento['tag']
+        mappa_tag_indici[tag].append(idx)
+
+    # 2. Costruisci lista tag e pesi positivi
+    tag_con_pesi = [(tag, max(score, 0)) for tag, score in punteggi.items()]
+    tag_con_pesi = [item for item in tag_con_pesi if item[1] > 0]
+
+    if not tag_con_pesi:
+        #raise ValueError("Tutti i punteggi sono zero o negativi.")
+        tag_scelto = random.choices(["auto","bici","citta","mare","montagna"], weights=[1,1,1,1,1], k=1)[0]
+
+    else:
+        tags, pesi = zip(*tag_con_pesi)
+        # 3. Scegli un tag in base al peso
+        tag_scelto = random.choices(tags, weights=pesi, k=1)[0]
+    
+    #print(tag_con_pesi)
+
+    # 4. Scegli un indice casuale tra quelli associati a quel tag
+    return random.choice(mappa_tag_indici[tag_scelto])
 
 
 #genero dati random per i grafici
-def rang_data_graf():
+def random_data_graf():
+    tag_interesse = random.choice(list(tags))
+    tag_disinteresse = random.choice(list(tags))
     obj = {}
     for tag in tags:
-        obj[tag] = {
-            "like":random.randint(1,10),
-            "dislike":-(random.randint(1,10)),
-        }
+        if(tag == tag_interesse):
+            obj[tag] = {
+                "like":random.randint(7,15),
+                "dislike":-(random.randint(1,3)),}
+        elif tag == tag_disinteresse:
+            obj[tag] = {
+                "like":random.randint(1,3),
+                "dislike":-(random.randint(7,15)),}
+        else:
+            obj[tag] = {
+                "like":random.randint(1,10),
+                "dislike":-(random.randint(1,10)),
+            }
     return obj
 #login 
 if 'utenti' not in st.session_state:
         st.session_state.utenti = {
-            'abdel': {'eta': 25, 'citta': 'pescara','tags':rang_data_graf(),'max':None,'min':None},
-            'davide': {'eta': 21, 'citta': 'gela','tags':rang_data_graf(),'max':None,'min':None},
-            'filippo': {'eta': 20, 'citta': 'torino','tags':rang_data_graf(),'max':None,'min':None},
-            'aurora': {'eta': 20, 'citta': 'torino','tags':rang_data_graf(),'max':None,'min':None},
-            'angela': {'eta': 20, 'citta': 'torino','tags':rang_data_graf(),'max':None,'min':None},
+            'abdel': {'eta': 25, 'citta': 'pescara','tags':random_data_graf(),'max':None,'min':None},
+            'davide': {'eta': 21, 'citta': 'gela','tags':random_data_graf(),'max':None,'min':None},
+            'filippo': {'eta': 20, 'citta': 'torino','tags':random_data_graf(),'max':None,'min':None},
+            'aurora': {'eta': 20, 'citta': 'torino','tags':random_data_graf(),'max':None,'min':None},
+            'angela': {'eta': 20, 'citta': 'torino','tags':random_data_graf(),'max':None,'min':None},
+            'mattia': {'eta': 21, 'citta': 'taranto','tags':random_data_graf(),'max':None,'min':None},
+            'saverio': {'eta': 23, 'citta': 'salerno','tags':random_data_graf(),'max':None,'min':None},
+            'danny': {'eta': 23, 'citta': 'torino','tags':random_data_graf(),'max':None,'min':None},
+            'gianmaria': {'eta': 20, 'citta': 'ancona','tags':random_data_graf(),'max':None,'min':None},
+            'jacopo': {'eta': 20, 'citta': 'ancona','tags':random_data_graf(),'max':None,'min':None},
+            'ettore': {'eta': 20, 'citta': 'sassari','tags':random_data_graf(),'max':None,'min':None},
         }
 if 'utente_corrente' not in st.session_state:
     st.session_state.utente_corrente = None
 if 'fase' not in st.session_state:
     st.session_state.fase = 'login'
+if 'conteggio' not in st.session_state:
+    st.session_state.conteggio = 0
+valori_tags = {}
+def calcola_diff_like_dislike(dati):
+    for tag, valori in dati['tags'].items():
+        valori_tags[tag] = valori['like'] + valori['dislike']
+if st.session_state.utente_corrente and st.session_state.utente_corrente in st.session_state.utenti:
+    calcola_diff_like_dislike(st.session_state.utenti[st.session_state.utente_corrente])
 
-
+#print(imgs_2)
 #logica likes
-def cambia_valore(n):       
-        tag_corrente = imgs_2[st.session_state.random_index]["tag"]
-        corr =st.session_state.utente_corrente 
-        if tag_corrente not in st.session_state.utenti[corr]["tags"]:
-            st.session_state.utenti[corr]["tags"][tag_corrente] = {"like": 0,"dislike":0}
-        if n ==1:
-            st.session_state.utenti[corr]["tags"][tag_corrente]["like"] += 1
-        else:
-            st.session_state.utenti[corr]["tags"][tag_corrente]["dislike"] -= 1
-        st.session_state.random_index = np.random.randint(0, n_imgs)
+def cambia_valore(n): 
+    st.session_state["conteggio"] +=1
+    #print(st.session_state["conteggio"])      
+    tag_corrente = imgs_2[st.session_state.random_index]["tag"]
+    corr =st.session_state.utente_corrente 
+    if tag_corrente not in st.session_state.utenti[corr]["tags"]:
+        st.session_state.utenti[corr]["tags"][tag_corrente] = {"like": 0,"dislike":0}
+    if n ==1:
+        st.session_state.utenti[corr]["tags"][tag_corrente]["like"] += 1
+    else:
+        st.session_state.utenti[corr]["tags"][tag_corrente]["dislike"] -= 1
+    if st.session_state["conteggio"] < iterazioni_per_apprendere:
+        n = np.random.randint(0, n_imgs)
+        if n == st.session_state.random_index:
+            n = np.random.randint(0, n_imgs)
+    else: 
+        n = genera_indice_ponderato(imgs_2, valori_tags) 
+        if n == st.session_state.random_index:  
+            n = genera_indice_ponderato(imgs_2, valori_tags) 
+    st.session_state.random_index = n
+    
+    #if(n != st.session_state.random_index):
+    #    st.session_state.random_index = n
+    #else:
+    #    st.session_state.random_index = np.random.randint(0, n_imgs)
+    calcola_diff_like_dislike(st.session_state.utenti[corr])
+    
+
 
 def grafico(df):
     #df_long.rename(columns={'index': 'Categoria'}, inplace=True)
@@ -188,16 +284,31 @@ def grafico(df):
         title=None              
     )
     st.altair_chart(chart, use_container_width=True)
-tab_home,tab_server,tab_filtro = st.tabs(["home","Server","Filtraggio"])
+
+with st.sidebar:
+     st.caption("""
+### App page
+Questa applicazione mostra cosa accade dietro le quinte dei social media.  
+È suddivisa in **tre sezioni** principali: **App**, **Server** e **Filtraggio**.
+
+- **📲App**
+   🔐Esegui il login  con un nome,📝completa la registrazione, 🏠accedi alla home page  
+  nella home page puoi interaggire con dei post
+- **🗄️Server**  
+  Raccoglie ed analizza i dati degli utenti.
+- **🕵️‍♂️Filtaggio**  
+   Mostra come chi gestisce la piattaforma può filtrare e utilizzare i dati per creare profili, influenzare l’esperienza d’uso o venderli a terzi.
+""")
 
 
-with tab_home:
-    
-    #@st.fragment()
+st.title("🧠 Simulatore Social Media")
+tab_app,tab_server,tab_filtro = st.tabs(["App","Server","Filtraggio"])
+
+
+with tab_app:
+    # @st.fragment()
     #def fun_incremento_3():  
-    #fun_incremento_3()
-
-    
+    # fun_incremento_3()
     # Stato iniziale
     if 'temp_nome' not in st.session_state:
         st.session_state.temp_nome = ""
@@ -211,7 +322,7 @@ with tab_home:
     elif st.session_state.fase == 'registrazione':
         st.title("Registrazione")
     else:
-        st.title("Home")
+        st.subheader("🏠Home")
 
     #CALLBACK: login
     def esegui_login():
@@ -242,6 +353,7 @@ with tab_home:
         st.session_state.temp_nome = ""
         st.session_state.temp_eta = 0
         st.session_state.temp_citta = ""
+        st.session_state.conteggio = 0
 
     #LOGIN
     if st.session_state.fase == 'login':
@@ -251,89 +363,136 @@ with tab_home:
 
     #REGISTRAZIONE
     elif st.session_state.fase == 'registrazione':
-        st.write(f"Benvenuto **{st.session_state.utente_corrente}**, completa la registrazione:")
+        st.write(f"Benvenuto/a **{st.session_state.utente_corrente}**, completa la registrazione:")
         st.number_input("Età:", min_value=0, key="temp_eta")
         st.text_input("Città:", key="temp_citta")
         st.button("Registrati", on_click=esegui_registrazione,use_container_width=True)
 
     #HOME
     elif st.session_state.fase == 'home':
+        if "random_index" not in st.session_state:
+           st.session_state["random_index"] = 0 
         nome = st.session_state.utente_corrente
         utente = st.session_state.utenti.get(nome, {})
-        col1,col2,col3 = st.columns([1,2,1])
-        with col1:
-            st.success(f"Benvenuto {nome} !")
-        with col3:
-            logout = st.button("Logout",on_click=esegui_logout)
+        col1,col2,col3 = st.columns([1,4,1])
+        with col2:
+            col1,col2 = st.columns([4,1])
+            with col1:
+                st.success(f"Benvenuto/a {nome} !")
+            with col2:
+                logout = st.button("Logout",on_click=esegui_logout,type="primary")
+        #with col3:
         #st.write(f"Età: {utente.get('eta')}")
         #st.write(f"Città: {utente.get('citta')}")
-
-        @st.fragment()
+        numeri_immagini_galleria = []
+        immagini_galleria = 9
+        #@st.fragment()
         def fun_incremento_2():
-            col1, col2, col3 = st.columns([1, 2, 1])  
+            col1, col2, col3 = st.columns([1, 4, 1])  
             with col2:
-                st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
+                #st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
+                st.image(f'static/{imgs_2[st.session_state.random_index]["url"]}',caption=f"{imgs_2[st.session_state.random_index]['tag'].capitalize()}")
                 col1,col2 = st.columns([1,1])
                 with col1:
                     st.button("👍",on_click=  cambia_valore,args=(1,),use_container_width=True)
                 with col2:
                     st.button("👎",on_click= cambia_valore,args=(-1,),use_container_width=True)
+            
+            if st.session_state["conteggio"] <iterazioni_per_apprendere:
+                st.info(f"Fase di apprendimento, continua ad interaggire ..., il modello sta analizzando i tuoi interessi.")
+                col1,col2 = st.columns([1,5])
+                with col1:
+                    st.write(f"Progresso: {st.session_state.conteggio}/{iterazioni_per_apprendere}")
+                with col2:
+                    st.progress((st.session_state.conteggio)/iterazioni_per_apprendere)
+                st.caption("In questa fase, il modello genera immagini in modo casuale. Attraverso successive interazioni, il sistema applica algoritmi di apprendimento probabilistico per identificare pattern nei tuoi interessi visivi e ottimizzare la generazione delle immagini in base alle tue preferenze implicite.")
+                with st.expander("Probabilità categorie:"):
+                    st.write("Nella fase di appendimento tutte le categorie hanno la stessa probabilità di essere mostrate")
+            else:
+                st.success("Il modello ha completato la fase di apprendimento. A partire dai dati raccolti, applicherà criteri di similarità e ottimizzazione per selezionare e generare solo immagini coerenti con i tuoi interessi.")
+                st.caption("Ora il modello inizierà a generare immagini in linea con i tuoi interessi, appresi durante le iterazioni precedenti. Le immagini mostrate da questo momento in poi saranno ottimizzate per rispecchiare al meglio le tue preferenze e gusti, così come inferiti dai dati raccolti.")
+                with st.expander("Probabilità categorie:"):
+                    i = 0
+                    while i < immagini_galleria:
+                        n = genera_indice_ponderato(imgs_2, valori_tags)
+                        if n not in numeri_immagini_galleria:
+                            numeri_immagini_galleria.append(n)
+                            i+=1
+                    #n_chiamate = 10
+                    #risul = [genera_indice_ponderato(imgs_2, valori_tags) for _ in range(n_chiamate)]
+                    risultati = [imgs_2[i]["tag"] for i in numeri_immagini_galleria]
+                    conteggio = Counter(risultati)
+                    etichette = list(conteggio.keys())
+                    valori = list(conteggio.values())
+                    # Grafico a torta
+                    fig, ax = plt.subplots()
+                    ax.pie(valori, labels=etichette, autopct='%1.1f%%', startangle=90)
+                    ax.axis('equal')  # per rendere il cerchio perfetto
+                    #col1,col2 = st.columns([1,3])
+                    #with col1:
+                    #    st.markdown(f"""<div style="margin-top:100px"></div>""",unsafe_allow_html=True)
+                    #    # Mostra anche i numeri assoluti se vuoi
+                    #    st.write("Frequenze assolute:", dict(conteggio))
+                    #with col2:
+                    st.pyplot(fig)
             #grafico
-            col1,col2,col3 = st.columns([1,4,1])
+            col1,col2,col3 = st.columns([1,8,1])
             with col2:
                 st.divider()
                 chart_data = pd.DataFrame.from_dict(st.session_state.utenti[st.session_state.utente_corrente]["tags"], orient='index')
                 chart_data.rename(columns={'index': 'Tag'}, inplace=True)
-                with st.expander("**Grafico Like/Dislike**"):
+                with st.expander("Grafico Like/Dislike"):
                     if len(chart_data)==0:
                         st.subheader("Inizia a mettere Like/Dislike per vedere il grafico")
                     else:
                         #st.bar_chart(chart_data)
                         df = chart_data
                         #print("df1: ",df)
-                        grafico(df)
-                        
-                #st.divider()
-                #dati = st.session_state.utenti[st.session_state.utente_corrente]
-                #ordinati = sorted(
-                #            dati['tags'].items(),
-                #            key=lambda item: (-(item[1]['like'] - item[1]['dislike']), item[1]['like'])
-                #        )
-                #st.write(ordinati)
-                #st.divider()
+                        grafico(df)               
         fun_incremento_2() 
+        st.header("Per te:")
+        st.caption("""**Suggerimento:** prova a concentrarti su una sola categoria. In questo modo, il modello potrà affinare la sua comprensione dei tuoi interessi e generare immagini sempre più **pertinenti e specifiche** rispetto a quella tematica.
+""")
+        if st.session_state["conteggio"]>=iterazioni_per_apprendere:
+            for i in range(0,immagini_galleria,3):
+                col1,col2,col3 = st.columns(3)
+                with col1:
+                    st.image(f"static/{imgs_2[numeri_immagini_galleria[i]]['url']}")
+                with col2:
+                    st.image(f"static/{imgs_2[numeri_immagini_galleria[i+1]]['url']}")
+                with col3:
+                    st.image(f"static/{imgs_2[numeri_immagini_galleria[i+2]]['url']}")
+        else:
+            st.info("Completa la fase di apprendimento per vedere i post suggeriti")
+        #@st.fragment()
+        #def fun_gellery(): 
+        #   col1,col2,col3 = st.columns([1,1,1])
+        #    with col1:
+        #        
+        #        selected_image = image_select(
+        #            label="Clicca su un'immagine",
+        #            images=[
+        #                "static/citta_1.jpg",
+        #                "static/citta_2.jpg",
+        #                "static/citta_3.jpg",
+        #            ],
+        #            #captions=["Città 1", "Città 2", "Città 3"],
+        #        )
+        #        if selected_image:
+        #            st.write("Hai selezionato:", selected_image)
+        #            
+        #       
+        #        #st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
+        #        st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
+        #    with col2:
+        #        st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
+        #        st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
+        #    with col3:
+        #        st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
+        #        st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
 
-        @st.fragment()
-        def fun_gellery():
-            
-            col1,col2,col3 = st.columns([1,1,1])
-            with col1:
-                
-                selected_image = image_select(
-                    label="Clicca su un'immagine",
-                    images=[
-                        "static/citta_1.jpg",
-                        "static/citta_2.jpg",
-                        "static/citta_3.jpg",
-                    ],
-                    #captions=["Città 1", "Città 2", "Città 3"],
-                )
-
-                if selected_image:
-                    st.write("Hai selezionato:", selected_image)
-                    
-               
-                #st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
-                st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
-            with col2:
-                st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
-                st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
-            with col3:
-                st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
-                st.image(os.path.join(os.getcwd(),"static",imgs_2[st.session_state.random_index]["url"]))
-
-        if False:
-            fun_gellery()
+        #if False:
+        #    fun_gellery()
      
 with tab_server:
     possibili_interessi = {
@@ -354,7 +513,7 @@ with tab_server:
             "lat": lat,
             "lon": lon
         })
-    st.title("Analisi Utenti Registrati")
+    st.subheader("📊 Analisi Utenti Registrati")
     st.markdown("""
                 <div style="width:100%; background:#f5f5f5;padding:20px;border-radius:10px;margin:10px 0;"> 
                     In questa sezione sono raccolti tutti i dati degli utenti, divisi per: 
@@ -402,27 +561,27 @@ with tab_server:
     
     st.subheader("Distribuzione età")
     st.bar_chart(df["eta"].value_counts().sort_index())
-
-    #Mappa utenti
-    st.subheader("Mappa utenti per città")
-    st.pydeck_chart(pdk.Deck(
-        map_style='mapbox://styles/mapbox/light-v9',
-        initial_view_state=pdk.ViewState(
-            latitude=df["lat"].mean(),
-            longitude=df["lon"].mean(),
-            zoom=5
-        ),
-        layers=[
-            pdk.Layer(
-                "ScatterplotLayer",
-                data=df,
-                get_position='[lon, lat]',
-                get_radius=30000,
-                get_color='[200, 30, 0, 160]',
-                pickable=True
-            )
-        ]
-    ))
+    if False:
+        #Mappa utenti
+        st.subheader("Mappa utenti per città")
+        st.pydeck_chart(pdk.Deck(
+            map_style='mapbox://styles/mapbox/light-v10',
+            initial_view_state=pdk.ViewState(
+                latitude=df["lat"].mean(),
+                longitude=df["lon"].mean(),
+                zoom=5
+            ),
+            layers=[
+                pdk.Layer(
+                    "ScatterplotLayer",
+                    data=df,
+                    get_position='[lon, lat]',
+                    get_radius=30000,
+                    get_color='[200, 30, 0, 160]',
+                    pickable=True
+                )
+            ]
+        ))
 
     
     #Grafici
@@ -470,7 +629,7 @@ with tab_server:
             st.divider()     
 with tab_filtro:
     utenti = st.session_state.get("utenti", {})
-    st.markdown("# 🎯 Filtra gli utenti")
+    st.subheader("🎯 Filtra gli utenti")
     
     #st.info("In questa sezione puoi filtrare tutti gli utenti, per età, citta, interesse e parole chiavi riferite agli interessi  ")
     st.markdown("""
@@ -528,7 +687,7 @@ with tab_filtro:
 
     if utenti_filtrati:
         for nome, dati in utenti_filtrati.items():
-            st.markdown(f"**👤 {nome}** – {dati['eta']} anni, {dati['citta']}")
+            st.markdown(f"**👤 {nome.capitalize()}** – {dati['eta']} anni, {dati['citta']}")
             st.success(f"✨ Interesse principale: {dati.get('max', 'N/A').capitalize()}")
             st.error(f"😑 Disinteresse principale: {dati.get('min', 'N/A').capitalize()}")
             if mostra_like_dislike:
