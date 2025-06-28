@@ -611,7 +611,7 @@ col1,col2 = st.columns(2)
 with col1:
     st.page_link("pages/1-Podcast.py",label="Guarda il podcast",icon="🎧")
 with col2:
-    st.page_link("pages/App.py",label="Prova la nostra app",icon="📱")
+    st.page_link("pages/2-App.py",label="Prova la nostra app",icon="📱")
 
 
 
