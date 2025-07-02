@@ -3,7 +3,6 @@ import os
 import base64
 #from streamlit_javascript import st_javascript
 from datetime import datetime
-#import streamlit.components.v1 as components
 import plotly.graph_objects as go
 #from streamlit_js_eval import streamlit_js_eval
 import platform
