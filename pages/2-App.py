@@ -218,7 +218,7 @@ if 'utenti' not in st.session_state:
             'aurora': {'eta': 20, 'citta': 'torino','tags':random_data_graf(),'max':None,'min':None},
             'angela': {'eta': 20, 'citta': 'torino','tags':random_data_graf(),'max':None,'min':None},
             'mattia': {'eta': 21, 'citta': 'taranto','tags':random_data_graf(),'max':None,'min':None},
-            'saverio': {'eta': 23, 'citta': 'salerno','tags':random_data_graf(),'max':None,'min':None},
+            'saverio': {'eta': 22, 'citta': 'salerno','tags':random_data_graf(),'max':None,'min':None},
             'danny': {'eta': 23, 'citta': 'torino','tags':random_data_graf(),'max':None,'min':None},
             'gianmaria': {'eta': 20, 'citta': 'ancona','tags':random_data_graf(),'max':None,'min':None},
             'jacopo': {'eta': 20, 'citta': 'ancona','tags':random_data_graf(),'max':None,'min':None},
@@ -621,7 +621,7 @@ with tab_server:
                 st.error(f"**Disinteresse principale:** {(tag_min).capitalize()}")
                 if tag_min in possibili_interessi:
                      with st.expander("**:red[Possibili disinteressi]**"):
-                        for item in possibili_interessi[tag_max]:
+                        for item in possibili_interessi[tag_min]:
                             st.write(item)
                     #st.write(f"Possibili disinteressi: \n" + " | | ".join(possibili_interessi[tag_min]))
             else:

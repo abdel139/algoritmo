@@ -4,7 +4,7 @@ import base64
 #from streamlit_javascript import st_javascript
 from datetime import datetime
 #import streamlit.components.v1 as components
-
+import plotly.graph_objects as go
 #from streamlit_js_eval import streamlit_js_eval
 import platform
 import matplotlib.pyplot as plt
@@ -24,6 +24,8 @@ def get_image_base64(path):
     with open(path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
     
+
+
 #st.title("Home")
 first_home = get_image_base64("./static/imgs_site/img1.jpg")
 home_titolo = "Dentro l'Algoritmo"
@@ -84,7 +86,7 @@ st.markdown(f"""
 #st.write(img_url)
 
 
-st.subheader(""" 📱 Social media: chi guida chi?""")
+st.header(""" 📱 Social media: chi guida chi?""")
 #st.subheader("""Ogni giorno trascorriamo ore su piattaforme digitali. Ci sembrano libere, aperte, personalizzate. Ma siamo sicuri che lo siano davvero?""")
 col1,col2 = st.columns([1,1])
 with col1:
@@ -203,7 +205,7 @@ base_content = {
 st.markdown("""
 <div style="border-left: 4px solid #888; padding: 15px; background-color: rgb(239,239,239); color: rgb(51,51,51); font-style: italic; margin: 20px 0; max-width: 700px;">
 
-<h4>Partiamo da cos’è un algoritmo dei social media?</h4>
+<h4><span style="color:#666">Partiamo da:</span> cos’è un algoritmo dei social media?</h4>
 <p>È un insieme di regole e segnali che ordinano i contenuti su una piattaforma social, decidendo cosa mostrarti in base a quanto è probabile che ti piaccia o interagisca con essi.<br>
 Lo scopo è offrire un’esperienza personalizzata e coinvolgente: per questo nessun feed è uguale a un altro, anche se segui gli stessi account.</p>
 
@@ -219,10 +221,10 @@ Questi segnali si basano sulle tue precedenti interazioni e hanno un effetto a c
 <h4>In sintesi</h4>
 <p>L’algoritmo scansiona tutti i contenuti disponibili, li valuta e li ordina per offrirti un feed fatto su misura per te.<br>
 Nei prossimi approfondimenti si analizzeranno i segnali specifici per ogni piattaforma e come i creatori di contenuti possono “dialogare” con l’algoritmo per aumentare la loro visibilità.</p>
-
+<!--
 <p style="font-style: normal; font-size: 0.9em; color: #333; margin-top: 20px;">
 Fonte: <a href="https://blog.hootsuite.com/social-media-algorithm/" target="_blank">Hootsuite blog</a>
-</p>
+</p> -->
 
 </div>
 """, unsafe_allow_html=True)
@@ -305,7 +307,7 @@ else:
 with st.expander("📊 Evoluzione del tuo feed:"):
     col1,col2,col3 = st.columns([1,4,1])
     with col2:
-        #st.markdown("### 📊 Evoluzione del tuo feed")
+        st.markdown("### 📊 Evoluzione del tuo feed")
         fig, ax = plt.subplots()
         categorie = list(st.session_state.click_counts.keys())
         valori = list(st.session_state.click_counts.values())
@@ -313,6 +315,7 @@ with st.expander("📊 Evoluzione del tuo feed:"):
         ax.set_ylabel("Interazioni")
         ax.set_title("Distribuzione dei contenuti nel feed")
         st.pyplot(fig)
+        st.write("quiiiiiiiiiiiii")
 
 # Footer
 st.caption("🔍 Questa è una simulazione educativa. Nessun dato reale viene usato.")
@@ -324,7 +327,7 @@ st.caption("🔍 Questa è una simulazione educativa. Nessun dato reale viene us
 
 #st.markdown("""<div style="margin-top: 50px;"></div>""",unsafe_allow_html=True)
 st.divider()
-st.header("Economia dell'Attenzione e Social Media")
+st.header("👀Economia dell'Attenzione e Social Media")
 st.markdown("""<div style="margin-top: 20px;"></div>""",unsafe_allow_html=True)
 #st.subheader("Scopri come gli algoritmi influenzano ciò che vedi ogni giorno online")
 
@@ -332,17 +335,17 @@ st.markdown("""<div style="margin-top: 20px;"></div>""",unsafe_allow_html=True)
 col1,col2 = st.columns([4,2])
 with col1:
     st.markdown("""
-Dopo aver compreso come funziona un algoritmo, è importante capire **perché opera in questo modo**.  
-Il suo scopo non è solo mostrarti ciò che ti piace, ma soprattutto **mantenerti il più a lungo possibile sulla piattaforma**.  
-Ogni contenuto, notifica o suggerimento è progettato per **catturare la tua attenzione** e spingerti a restare, scrollare e interagire sempre di più.  
-Questo ci porta a parlare di un concetto chiave: l’**economia dell’attenzione**, che spiega come **l’attenzione degli utenti sia diventata una risorsa preziosa e limitata**.  
-In un mondo di contenuti infiniti, trattenere la tua attenzione è l’**obiettivo principale dei social media e degli algoritmi che li governano**.
-""")
+                Dopo aver compreso come funziona un algoritmo, è importante capire **perché opera in questo modo**.  
+                Il suo scopo non è solo mostrarti ciò che ti piace, ma soprattutto **mantenerti il più a lungo possibile sulla piattaforma**.  
+                Ogni contenuto, notifica o suggerimento è progettato per **catturare la tua attenzione** e spingerti a restare, scrollare e interagire sempre di più.  
+                Questo ci porta a parlare di un concetto chiave: l’**economia dell’attenzione**, che spiega come **l’attenzione degli utenti sia diventata una risorsa preziosa e limitata**.  
+                In un mondo di contenuti infiniti, trattenere la tua attenzione è l’**obiettivo principale dei social media e degli algoritmi che li governano**.
+                """)
 with col2:
     st.image("static/imgs_site/scrolling_youth.jpg")
 
 
-st.markdown("""
+st.markdown(f"""
 <div style="border-left: 4px solid #888; padding: 15px; background-color: rgb(239,239,239); color: rgb(51,51,51); font-style: italic; margin: 20px 0; max-width: 700px;">
 
 <h4>Cos’è l’economia dell’attenzione?</h4>
@@ -358,10 +361,10 @@ Può anche incentivare contenuti estremi, emozionali o controversi, perché atti
 
 <h4>In sintesi</h4>
 <p>L’economia dell’attenzione spiega perché piattaforme e algoritmi non sono neutrali: competono per il tuo tempo e progettano esperienze che ti spingano a tornare continuamente, spesso a scapito della varietà o della qualità dei contenuti.</p>
-
-<p style="font-style: normal; font-size: 0.9em; color: #333; margin-top: 20px;">
+ 
+<!--<p style="font-style: normal; font-size: 0.9em; color: #333; margin-top: 20px;">
 Fonte: <a href="https://www.nytimes.com/interactive/2022/11/22/opinion/social-media-attention-economy.html" target="_blank">New York Times – Attention Economy</a>
-</p>
+</p>-->
 
 </div>
 """, unsafe_allow_html=True)
@@ -429,7 +432,7 @@ if st.session_state.attention_clicks >= 3:
         Questo può alimentare ansia, disinformazione o polarizzazione.
         """)
 
-    st.button("🔄 Riprova",reset_e_a())
+    st.button("🔄 Riprova",on_click=reset_e_a,use_container_width=True)
         
 
 # Footer
@@ -465,10 +468,10 @@ st.markdown("""
 <p>Il fenomeno si amplifica con i <strong>bias cognitivi</strong>, cioè scorciatoie mentali che usiamo per semplificare la realtà. Uno dei più comuni è il <em>confirmation bias</em>: tendiamo a cercare e ricordare solo le informazioni che confermano le nostre idee.</p>
 
 <p>Il risultato? Una visione sempre più polarizzata e chiusa del mondo, dove si fatica a dialogare con chi la pensa diversamente.</p>
-
+<!--
 <p style="font-style: normal; font-size: 0.9em; color: #333; margin-top: 20px;">
 Fonte: <a href="https://www.scientificamerican.com/article/the-delusion-of-consensus-in-the-facebook-news-feed/" target="_blank">Scientific American</a>
-</p>
+</p> -->
 
 </div>
 """, unsafe_allow_html=True)
@@ -558,7 +561,7 @@ if clicked:
         st.caption("📌 Algoritmo rafforzato: conferma la tua visione.")
 
 # Reset
-if st.button("🔄 Reset simulazione"):
+if st.button("🔄 Reset simulazione",use_container_width=True):
     st.session_state.bubble_bias = {"focus": "politica", "clicks": 0}
 
 
@@ -571,14 +574,32 @@ clicks = st.session_state.bubble_bias["clicks"]
 max_clicks = 6
 livello = min(clicks / max_clicks, 1.0)
 
-fig, ax = plt.subplots()
-ax.barh(["Bolla attuale"], [livello], color='crimson' if livello >= 0.7 else 'orange' if livello >= 0.3 else 'green')
+#fig, ax = plt.subplots()
+#ax.barh(["Bolla attuale"], [livello], color='crimson' if livello >= 0.7 else 'orange' if livello >= 0.3 else 'green')
+#ax.set_xlim(0, 1)
+#ax.set_title("📈 Livello di intrappolamento nella bolla")
+#ax.set_xlabel("0 = mente aperta • 1 = feed polarizzato")
+#st.pyplot(fig)
+
+
+plt.style.use("seaborn-v0_8-darkgrid")  # Stile coerente
+
+fig, ax = plt.subplots(figsize=(6, 3.5))
+
+# Colore dinamico in base al livello
+color = 'crimson' if livello >= 0.7 else 'orange' if livello >= 0.3 else 'green'
+
+ax.barh(["Bolla attuale"], [livello], color=color)
+
 ax.set_xlim(0, 1)
-ax.set_title("📈 Livello di intrappolamento nella bolla")
-ax.set_xlabel("0 = mente aperta • 1 = feed polarizzato")
+ax.set_xlabel("0 = mente aperta • 1 = feed polarizzato", fontsize=12)
+ax.set_title("📈 Livello di intrappolamento nella bolla", fontsize=14, weight='bold')
+
+ax.grid(alpha=0.3)
+
 st.pyplot(fig)
 
-with st.expander("🆚 Feed distorto vs Feed bilanciato"):
+with st.expander("🆚 Feed distorto vs Feed bilanciato",expanded=True):
     st.markdown("Ecco un esempio di come lo stesso argomento può essere presentato in due modi diversi:")
 
     col1, col2 = st.columns(2)
@@ -596,6 +617,157 @@ with st.expander("🆚 Feed distorto vs Feed bilanciato"):
         st.markdown("- 🧠 *“Voci a confronto: opinioni diverse a confronto”*")
 
     st.caption("🔍 Questo mostra come il framing e la selezione delle parole cambiano la percezione.")
+
+st.subheader("🎮 Gamification e ricompense invisibili")
+st.image("static/imgs_site/gamification.jpg")
+
+st.markdown("""
+Gli algoritmi non ti mostrano solo contenuti: ti **premiano** per restare attivo.  
+Like, badge, notifiche, cuori, suoni... tutto è progettato per **attivare il cervello** come in un videogioco.
+""")
+
+st.markdown("""
+<div style="border-left: 4px solid #888; padding: 15px; background-color: rgb(239,239,239); color: rgb(51,51,51); font-style: italic; margin: 20px 0; max-width: 700px;">
+
+<h4>🔁 Il ciclo della ricompensa (senza accorgertene)</h4>
+
+<p>Ogni like ricevuto, ogni nuova visualizzazione o notifica è una piccola <strong>ricompensa</strong>.</p>
+
+<p>Come in un videogioco, queste micro-ricompense ti spingono a continuare: controlli se qualcuno ha risposto, pubblichi di nuovo, torni sull'app.</p>
+
+<p>Si attivano circuiti dopaminici: è lo stesso meccanismo che ci fa tornare su una slot machine o su un videogioco.</p>
+
+<p>Il risultato? Resti connesso più a lungo, ma spesso non sai neanche <strong>perché</strong>.</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+st.success("“Ogni notifica è come un premio a sorpresa. E il cervello ama le sorprese.”")
+
+
+st.subheader("💸 Monetizzazione indiretta")
+st.image("static/imgs_site/data_monetization.jpg")
+
+st.markdown("""
+I social non ti chiedono soldi. Ma non sono gratis.  
+Paghi con delle risorse molto più preziosa: i tuoi **dati** e la **tua attenzione**.
+""")
+
+st.markdown("""
+<div style="border-left: 4px solid #444; padding: 15px; background-color: #f0f0f0; color: #333; font-style: italic; margin: 20px 0; max-width: 700px;">
+
+<h4>📊 Se non paghi il prodotto, *sei* il prodotto</h4>
+
+<p>Ogni volta che scorri, clicchi, resti su un post... i tuoi dati vengono raccolti.</p>
+
+<p>Le piattaforme li usano per vendere <strong>pubblicità mirata</strong>: più sanno di te, più gli inserzionisti pagano.</p>
+
+<p>Non vendono il tuo nome, ma la tua attenzione, i tuoi interessi, i tuoi clic. Tutto viene <strong>monetizzato</strong>.</p>
+
+<p>Il contenuto che vedi non è neutrale: è ottimizzato per farti rimanere lì — e guadagnare di più.</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+st.warning("“Il vero business dei social non sei tu. È il tuo tempo.”")
+
+
+st.subheader("💡 Esempio pratico")
+st.subheader("🎮 Simulazione: quanto resisti alle notifiche?")
+st.markdown("""
+<div style="border-left: 6px solid #f63366; background-color: #eee; padding: 1rem; margin-bottom: 2rem;">
+<strong>🎯 Simulazione:</strong><br>
+Clicca il pulsante <span style="color:#888">(Controlla notifica)</span> per vedere cosa succede...  <br>
+Le notifiche sono casuali, imprevedibili... come nei social.
+</div>
+""", unsafe_allow_html=True)
+
+# Stato iniziale
+if "clicks" not in st.session_state:
+    st.session_state.clicks = 0
+    st.session_state.rewards = 0
+    st.session_state.reward_history = []
+
+# Azione utente
+if st.button("🔔 Controlla notifiche",use_container_width=True):
+    st.session_state.clicks += 1
+    # 30% di probabilità di ricevere una "ricompensa"
+    if random.random() < 0.3:
+        st.session_state.rewards += 1
+        feedback = random.choice([
+            "👍 Hai ricevuto un like!",
+            "💬 Qualcuno ha commentato il tuo post!",
+            "🔥 Nuovi follower!",
+            "🏆 Badge sbloccato!",
+            "🔁 Il tuo contenuto è stato condiviso!"
+        ])
+        st.success(feedback)
+    else:
+        st.info("Nessuna notifica... ma forse al prossimo clic?")
+
+    # Storico per grafico
+    st.session_state.reward_history.append(st.session_state.rewards)
+
+# Grafico
+#st.markdown("#### 📊 Ricompense ricevute nel tempo")
+#fig, ax = plt.subplots()
+#ax.plot(st.session_state.reward_history, marker="o", color="orange")
+#ax.set_xlabel("Clic eseguiti")
+#ax.set_ylabel("Ricompense accumulate")
+#ax.set_title("Andamento delle ricompense")
+#st.pyplot(fig)
+
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(
+    y=st.session_state.reward_history,
+    x=list(range(1, len(st.session_state.reward_history)+1)),
+    mode='lines+markers',
+    line=dict(color='deeppink', width=3),
+    marker=dict(size=10, symbol="star", color='orange'),
+    name='Ricompense'
+))
+
+fig.update_layout(
+    title="📊 Ricompense ricevute nel tempo",
+    xaxis_title="Clic eseguiti",
+    yaxis_title="Ricompense totali",
+    template="plotly_white",
+    plot_bgcolor='rgba(250,250,250,0.95)',
+    paper_bgcolor='rgba(255,255,255,0.9)',
+    font=dict(size=14),
+    height=400
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+
+# Analisi comportamentale
+if st.session_state.clicks >= 10:
+    if st.session_state.rewards < 3:
+        st.warning("🧠 Ti stai sforzando per ottenere un premio... ma ne ricevi pochi. Questo ti motiva ancora di più.")
+    elif st.session_state.rewards >= 6:
+        st.success("🎯 Sei stato premiato spesso: il tuo cervello ora vuole ancora più notifiche.")
+    else:
+        st.info("🔁 Ricompense intermittenti = comportamento rinforzato. il che ti porta a riprovare ogni volta")
+
+def reset_sim():
+    st.session_state.clicks = 0
+    st.session_state.rewards = 0
+    st.session_state.reward_history = []
+    print("res")
+
+# Reset
+st.button("🔄 Reset simulazione",key="res_2",on_click= reset_sim,use_container_width=True)
+   
+with st.expander("🧠 Perché funziona così?"):
+    st.markdown("""
+    I social usano meccanismi simili alle **slot machine**: non sai quando riceverai una ricompensa, ma il fatto che **a volte succeda** ti spinge a provarci ancora.
+
+    Questo si chiama **rinforzo intermittente**: il cervello rilascia dopamina quando ottieni un like, un badge o una notifica, anche se non sempre accade.
+
+    Il risultato? Ti trovi a cliccare compulsivamente, anche senza un reale bisogno.
+    """)
 
 
 st.markdown("""<div style = "with:100%;margin:100px 0 0 0;"></div>""",unsafe_allow_html=True)
