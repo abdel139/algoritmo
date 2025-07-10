@@ -595,12 +595,13 @@ color = 'crimson' if livello >= 0.7 else 'orange' if livello >= 0.3 else 'green'
 ax.barh(["Bolla attuale"], [livello], color=color)
 
 ax.set_xlim(0, 1)
-ax.set_xlabel("0 = mente aperta • 1 = feed polarizzato", fontsize=12)
-ax.set_title("📈 Livello di intrappolamento nella bolla", fontsize=14, weight='bold')
+ax.set_xlabel("0 = mente aperta • 1 = feed polarizzato", fontsize=10)
+ax.set_title("Livello di intrappolamento nella bolla", fontsize=14)
 
 ax.grid(alpha=0.3)
 
 st.pyplot(fig)
+st.markdown("""<div style = "with:100%;margin:20px 0 0 0;"></div>""",unsafe_allow_html=True)
 
 with st.expander("🆚 Feed distorto vs Feed bilanciato",expanded=True):
     st.markdown("Ecco un esempio di come lo stesso argomento può essere presentato in due modi diversi:")
