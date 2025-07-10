@@ -46,6 +46,10 @@ Questa pagina introduce in modo semplice e interattivo il funzionamento degli al
   cos'è e quali sono le sue conseguenze.
 - **🫧 Bias e bolle informative**  
   Come ci finiamo senza accorgercene.
+- **🎮 Gamification e ricompense invisibili**  
+  il premio per restare attivo.
+- **💸 Monetizzazione indiretta**  
+  come le aziende guadagnano dai dati.
 
 - **💡Esempi pratici**  
  per ogni sezione sono disponibili diverse simulazioni con cui si può interagire.
@@ -617,6 +621,7 @@ with st.expander("🆚 Feed distorto vs Feed bilanciato",expanded=True):
 
     st.caption("🔍 Questo mostra come il framing e la selezione delle parole cambiano la percezione.")
 
+st.markdown("""<div style = "with:100%;margin:50px 0 0 0;"></div>""",unsafe_allow_html=True)
 st.subheader("🎮 Gamification e ricompense invisibili")
 st.image("static/imgs_site/gamification.jpg")
 
@@ -643,7 +648,7 @@ st.markdown("""
 
 st.success("“Ogni notifica è come un premio a sorpresa. E il cervello ama le sorprese.”")
 
-
+st.markdown("""<div style = "with:100%;margin:50px 0 0 0;"></div>""",unsafe_allow_html=True)
 st.subheader("💸 Monetizzazione indiretta")
 st.image("static/imgs_site/data_monetization.jpg")
 
@@ -806,7 +811,7 @@ st.markdown(f"""
             <li style="list-style: circle;"><p style="width: 150px; display:inline-block;margin:0">Fargnoli Angela</p> [s321728]</li>
             <li style="list-style: circle;"><p style="width: 150px; display:inline-block;margin:0">Strafallaci Aurora </p> [s325070]</li>
             </ul>
-            <p>Numero gruppo: 8</p>
+            <p>Numero gruppo: 6</p>
         </div>
         """,unsafe_allow_html=True)
 #st.success("Per il corso di Internet e social media realizzato da: Abdelkbir, Davide, Filippo, Aurora, Angela ")
