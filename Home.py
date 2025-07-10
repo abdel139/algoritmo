@@ -571,7 +571,7 @@ if st.button("🔄 Reset simulazione",use_container_width=True):
 
 
 st.subheader("📊 Quanto sei nella bolla?")
-st.markdown("Ogni clic che conferma il tuo bias rafforza la bolla. Cambiare categoria più volte può ridurla.")
+st.caption("Ogni clic che conferma il tuo bias rafforza la bolla. Cambiare categoria più volte può ridurla.")
 
 clicks = st.session_state.bubble_bias["clicks"]
 max_clicks = 6
